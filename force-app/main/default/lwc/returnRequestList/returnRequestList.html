@@ -1,0 +1,30 @@
+<!--
+Return Request List - Supervisor & Agent visibility
+Displays last 20 requests with status filter and row navigation.
+-->
+<template>
+    <lightning-card title="Return Requests" icon-name="custom:custom71">
+        <div class="slds-p-around_medium">
+            <div class="slds-grid slds-gutters slds-m-bottom_small">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                    <lightning-combobox
+                        name="statusFilter"
+                        label="Filter by Status"
+                        value={status}
+                        options={statusOptions}
+                        placeholder="All Statuses"
+                        onchange={handleStatusChange}
+                    ></lightning-combobox>
+                </div>
+            </div>
+
+            <lightning-datatable
+                key-field="Id"
+                data={rows}
+                columns={columns}
+                hide-checkbox-column
+                onrowaction={handleRowAction}
+            ></lightning-datatable>
+        </div>
+    </lightning-card>
+</template>

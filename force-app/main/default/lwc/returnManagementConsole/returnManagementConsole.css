@@ -1,0 +1,26 @@
+.slds-text-heading_medium {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.slds-text-title_caps {
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    font-weight: bold;
+}
+
+.slds-box_x-small {
+    padding: 0.75rem;
+}
+
+.slds-m-bottom_small {
+    margin-bottom: 0.5rem;
+}
+
+.slds-m-top_small {
+    margin-top: 0.5rem;
+}
+
+.slds-m-right_small {
+    margin-right: 0.5rem;
+}

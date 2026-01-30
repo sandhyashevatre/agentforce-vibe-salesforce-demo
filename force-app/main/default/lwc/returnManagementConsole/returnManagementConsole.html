@@ -1,0 +1,109 @@
+<template>
+    <!-- KPI Header Cards -->
+    <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_medium">
+        <div class="slds-col slds-size_1-of-4">
+            <lightning-card title="New" icon-name="standard:case" class="slds-theme_default">
+                <div class="slds-text-heading_medium slds-text-align_center">{newCount}</div>
+            </lightning-card>
+        </div>
+        <div class="slds-col slds-size_1-of-4">
+            <lightning-card title="Under Review" icon-name="standard:case" class="slds-theme_default">
+                <div class="slds-text-heading_medium slds-text-align_center">{underReviewCount}</div>
+            </lightning-card>
+        </div>
+        <div class="slds-col slds-size_1-of-4">
+            <lightning-card title="Approved" icon-name="standard:case" class="slds-theme_default">
+                <div class="slds-text-heading_medium slds-text-align_center">{approvedCount}</div>
+            </lightning-card>
+        </div>
+        <div class="slds-col slds-size_1-of-4">
+            <lightning-card title="Rejected" icon-name="standard:case" class="slds-theme_default">
+                <div class="slds-text-heading_medium slds-text-align_center">{rejectedCount}</div>
+            </lightning-card>
+        </div>
+    </div>
+    
+    <div class="slds-grid slds-gutters slds-wrap">
+        <div class="slds-col slds-size_1-of-2">
+            <lightning-card title="Create Return Request" icon-name="standard:case">
+                <div class="slds-p-around_small">
+                    <lightning-input label="Customer Name" data-field="customerName" value={customerName} onchange={handleInputChange} required></lightning-input>
+                    <lightning-input label="Customer Email" data-field="customerEmail" value={customerEmail} onchange={handleInputChange} type="email" required></lightning-input>
+                    <lightning-input label="Order Number" data-field="orderNumber" value={orderNumber} onchange={handleInputChange} required></lightning-input>
+                    <lightning-combobox label="Reason" data-field="reason" value={reason} onchange={handleInputChange} options={reasonOptions} required></lightning-combobox>
+                    <lightning-button label="Add Item" icon-name="utility:add" variant="neutral" onclick={handleAddItem}></lightning-button>
+                    <lightning-button label="Create Return Request" variant="brand" onclick={handleSubmit} disabled={isLoading}></lightning-button>
+                </div>
+            </lightning-card>
+            <lightning-card title="Recent Return Requests" icon-name="standard:case">
+                <div class="slds-p-around_small">
+                    <lightning-datatable key-field="Id" data={returnRequests} columns={columns} onrowaction={handleRowAction} onsort={handleSort} sorted-by={sortedBy} sorted-direction={sortedDirection} hide-checkbox-column="true" max-row-selection="1" selected-rows={selectedRows}></lightning-datatable>
+                </div>
+            </lightning-card>
+        </div>
+        <div class="slds-col slds-size_1-of-2">
+            <lightning-card title="Return Details" icon-name="standard:case">
+                <div class="slds-p-around_small">
+                    <template if:true={hasSelectedReturn}>
+                        <!-- Triage Section -->
+                        <div class="slds-m-bottom_small">
+                            <lightning-button 
+                                label="Analyze Return" 
+                                variant="brand" 
+                                onclick={handleAnalyzeReturn} 
+                                disabled={isAnalyzing}
+                                class="slds-m-right_small"></lightning-button>
+                            <lightning-spinner if:true={isAnalyzing} size="small"></lightning-spinner>
+                        </div>
+                        
+                        <!-- Triage Results Display -->
+                        <template if:true={triageRecommendation}>
+                            <div class="slds-box slds-box_x-small slds-m-bottom_small">
+                                <div class="slds-text-title_caps">Risk Score: {triageRecommendation.riskScore}/100</div>
+                                <div class="slds-text-title_caps slds-m-top_small">Recommendation: {triageRecommendation.recommendation}</div>
+                                <div class="slds-text-body_small slds-m-top_small">{triageRecommendation.summary}</div>
+                                <div class="slds-m-top_small">
+                                    <lightning-button 
+                                        label="Apply Suggested Status" 
+                                        variant="success" 
+                                        onclick={handleApplySuggestedStatus}
+                                        disabled={isLoading}></lightning-button>
+                                </div>
+                            </div>
+                        </template>
+                        
+                        <!-- Key Signals List -->
+                        <template if:true={triageRecommendation}>
+                            <template if:true={hasKeySignals}>
+                                <h3 class="slds-text-heading_small">Key Signals</h3>
+                                <ul class="slds-list_dotted slds-m-bottom_small">
+                                    <template for:each={triageRecommendation.keySignals} for:item="signal">
+                                        <li key={signal}>{signal}</li>
+                                    </template>
+                                </ul>
+                            </template>
+                        </template>
+                        
+                        <!-- Suggested Actions List -->
+                        <template if:true={triageRecommendation}>
+                            <template if:true={hasSuggestedActions}>
+                                <h3 class="slds-text-heading_small">Suggested Actions</h3>
+                                <ul class="slds-list_dotted slds-m-bottom_small">
+                                    <template for:each={triageRecommendation.suggestedNextActions} for:item="action">
+                                        <li key={action}>{action}</li>
+                                    </template>
+                                </ul>
+                            </template>
+                        </template>
+                        
+                        <!-- Return Items Table -->
+                        <lightning-datatable key-field="Id" data={selectedReturnRequestDetails.Return_Items__r} columns={itemColumns}></lightning-datatable>
+                    </template>
+                    <template if:false={hasSelectedReturn}>
+                        <p>No return request selected</p>
+                    </template>
+                </div>
+            </lightning-card>
+        </div>
+    </div>
+</template>

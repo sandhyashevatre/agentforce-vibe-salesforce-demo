@@ -1,5 +1,5 @@
 # 🚀 Agentforce Vibe × Salesforce  
-## From Idea to Working App in One Day
+## From Idea to Working App 
 
 This repository showcases how **Agentforce Vibe** can accelerate real-world Salesforce development by acting as an AI development co-pilot inside **VS Code**.
 
